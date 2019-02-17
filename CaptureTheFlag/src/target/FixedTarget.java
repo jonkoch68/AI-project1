@@ -6,7 +6,7 @@ import processing.core.PVector;
 /**
  * A fixed target.
  */
-class FixedTarget implements Target {
+public class FixedTarget implements Target {
 
 	private PVector pos_; // target position
 

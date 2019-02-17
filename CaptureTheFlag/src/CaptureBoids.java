@@ -14,27 +14,37 @@ import processing.core.PVector;
 import target.MouseTarget;
 
 import geometry.RectangularRegion;
-
+import geometry.CircularTarget;
 /**
  * Boids which seek the mouse position.
  */
 public class CaptureBoids extends BoidsCore {
-	private List<Boid> teamOneBoids_; // boids in the world
-	private List<Boid> teamTwoBoids_; // boids in the world
+	private List<TeamBoids> teamOneBoids_; // boids in the world
+	private List<TeamBoids> teamTwoBoids_; // boids in the world
 	private RectangularRegion areaRed_;
 	private RectangularRegion areaBlue_;
+	private CircularTarget target0_;
+	private CircularTarget target1_;
+	private int score0_,score1_;
 
 	public void setup () {
 		super.setup();
-		teamOneBoids_ = new ArrayList<Boid>();
-		teamTwoBoids_ = new ArrayList<Boid>();
+		score0_ = 0;
+		score1_ = 0;
+		teamOneBoids_ = new ArrayList<TeamBoids>();
+		teamTwoBoids_ = new ArrayList<TeamBoids>();
 		areaRed_ =
 		    new RectangularRegion(world_,0.0f,0.0f,255,0,0,0);
 		areaBlue_ =
 		    new RectangularRegion(world_,world_.getApplet().width / 2,0.0f,0,0,255,
 		                          1);
+		target0_ = new CircularTarget(100.0f, world_.getApplet().height/2,0,world_,50.0f,color(255,0,255));
+		target1_ = new CircularTarget(900.0f, world_.getApplet().height/2,1,world_,50.0f,color(255,0,255));
+		
 		world_.addThing(areaRed_);
 		world_.addThing(areaBlue_);
+		world_.addThing(target0_);
+		world_.addThing(target1_);
 		this.makeBoid(10,10,0);
 		this.makeBoid(750,600,1);
 		this.makeBoid(750,600,1);
@@ -48,7 +58,7 @@ public class CaptureBoids extends BoidsCore {
 	protected void makeBoid ( float x, float y, int id ) {
 		// behaviors
 		// behaviors
-		Behavior seek = new Seek(new MouseTarget(this),color(255,0,0));
+		Behavior seek = new Seek(target0_.getTarget(),color(255,0,0));
 
 		// an arbitrator to combine behaviors
 		OneChoice arbitrator = new OneChoice(seek);
@@ -77,8 +87,7 @@ public class CaptureBoids extends BoidsCore {
 			outerloop : for ( Boid toCheck : teamOneBoids_ ) {
 				for ( Boid other : teamTwoBoids_ ) {
 					if ( PVector.dist(other.getPosition(),toCheck.getPosition()) <= 10 ) {// overlapping
-					                                                                      // coordinates
-								
+					                                                                      // coordinates		
 						if ( areaRed_.inRegion(toCheck) && areaRed_.inRegion(other) ) {// both
 						                                                               // in
 						                                                               // teamOne's
@@ -95,7 +104,20 @@ public class CaptureBoids extends BoidsCore {
 
 				}
 			}
+		for(TeamBoids boids : teamOneBoids_) {
+			if(target0_.inRegion(boids)){
+				score(boids);
+				break;
+			}
 		}
+		for(TeamBoids boids : teamTwoBoids_) {
+			if(target1_.inRegion(boids)){
+				score(boids);
+				break;
+			}
+		}
+		}
+		System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 	}
 
 	public void kill ( Boid victim ) {
@@ -106,6 +128,17 @@ public class CaptureBoids extends BoidsCore {
 		}
 		world_.killBoid(victim);
 
+	}
+	public void score(TeamBoids boid) {
+		if(boid.getTeam() == 1) {
+			world_.killBoid(boid);
+			teamTwoBoids_.remove(boid);
+			score1_++;
+		}else {
+			world_.killBoid(boid);
+			teamOneBoids_.remove(boid);
+			score0_++;
+		}
 	}
 
 	public static void main ( String[] args ) {

@@ -151,4 +151,7 @@ public class World {
 		applet_.ellipseMode(PApplet.CENTER);
 		applet_.ellipse(pos.x,pos.y,radius * 2,radius * 2);
 	}
+	public void killBoid(Boid victim) {
+		boids_.remove(victim);
+	}
 }

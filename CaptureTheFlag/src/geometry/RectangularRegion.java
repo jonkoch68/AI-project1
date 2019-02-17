@@ -2,6 +2,7 @@ package geometry;
 
 import java.awt.Color;
 
+import core.Boid;
 import core.World;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -33,7 +34,16 @@ public class RectangularRegion extends Region{
 	public int getRegionID() {
 		return id_;
 	}
-	
+	public float[] getXBounds(){
+		float[] bounds = {x_, x_+ world_.getApplet().width/2.0f};
+		return bounds;
+	}
+	public boolean inRegion(Boid me) {
+		if(this.getXBounds()[0]<me.getPosition().x && getXBounds()[1]>me.getPosition().x) {
+			return true;
+		}
+		return false;
+	}
 	public void render () {
 		PApplet applet = world_.getApplet();
 		applet.fill(r_,g_,b_);

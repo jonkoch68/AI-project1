@@ -49,9 +49,11 @@ public abstract class BoidsCore extends PApplet {
 
 			// wrap boid at window edges - note that this changes the boid's position
 			// because PVector is mutable
+			
 			PVector pos = boid.getPosition();
-			if ( pos.x < 0 ) {
+			/*if ( pos.x < 0 ) {
 				pos.x += width;
+				
 			}
 			if ( pos.y < 0 ) {
 				pos.y += height;
@@ -61,7 +63,17 @@ public abstract class BoidsCore extends PApplet {
 			}
 			if ( pos.y > height ) {
 				pos.y -= height;
+			}*/
+			PVector vel=boid.getVelocity();
+			if ( pos.x < 0 || pos.x>width) {
+				vel.x *=-1;
 			}
+			if ( pos.y < 0 ||  pos.y > height) {
+				vel.y *= -1;
+			}
+
+			
+			
 		}
 	}
 

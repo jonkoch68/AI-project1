@@ -1,9 +1,11 @@
 package behavior;
 
+import core.Behavior;
 import core.Boid;
 import core.Target;
 import core.World;
 import geometry.CircularRegion;
+import geometry.CircularTarget;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -11,11 +13,11 @@ import processing.core.PVector;
  * @author chase
  *
  */
-public class GetBetween extends TargetBehavior{
-	private CircularRegion goal_;
-	private Target target_;
-	public GetBetween ( Target Etarget, CircularRegion goal, int c ) {
-		super(Etarget,c);
+public class GetBetween extends Behavior{
+	private CircularTarget goal_;
+	private Boid target_;
+	public GetBetween ( Boid Etarget, CircularTarget goal, int c ) {
+		super(c);
 		target_=Etarget;
 		goal_=goal;
 	}
@@ -27,10 +29,10 @@ public class GetBetween extends TargetBehavior{
 	@Override
 	public PVector getSteeringForce ( Boid boid, World world ) {
 		PVector bpos=boid.getPosition();
-		PVector gpos=goal_.getCenter();
+		PVector gpos=goal_.getTarget().getPosition();
 		PVector tpos=target_.getPosition();
 		PVector line=PVector.add(gpos,tpos);
-		PVector.div(line,2,line);
+		PVector.div(line,(3/4),line);
 		PVector destination=PVector.sub(line,bpos);
 		PVector steering = PVector.sub(destination,boid.getVelocity());
 		steering.limit(boid.getMaxForce());

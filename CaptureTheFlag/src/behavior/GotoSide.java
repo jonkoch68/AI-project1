@@ -8,12 +8,11 @@ import processing.core.PVector;
 
 /**
  * @author Jonko
- *
  */
 public class GotoSide extends Behavior {
 
-
 	private RectangularRegion region_;
+
 	/**
 	 * @param c
 	 */
@@ -23,17 +22,16 @@ public class GotoSide extends Behavior {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see core.Behavior#getSteeringForce(core.Boid, core.World)
 	 */
 	@Override
-	public PVector getSteeringForce (Boid boid, World world ) {
+	public PVector getSteeringForce ( Boid boid, World world ) {
 
-		if(region_.inRegion(boid)) {			
-				System.out.println("Friendly Terriotry");
-				return new PVector(0,0);	
-		}else {
-			System.out.println("enemy terriotory");
+		if ( region_.inRegion(boid) ) {
+			return new PVector(0,0);
+		} else {
 			PVector p = boid.getPosition();
 			PVector t = region_.getCenter();
 			PVector target = PVector.sub(t,p);

@@ -9,18 +9,28 @@ import processing.core.PVector;
 
 /**
  * @author Jonko
- *
  */
-public class RectangularRegion extends Region{
+public class RectangularRegion extends Region {
 
 	/**
 	 * @param world
 	 */
-	private float x_,y_;
-	private int r_,g_,b_,id_;
+	private float x_, y_;
+	private int r_, g_, b_, id_;
 
-	
-	public RectangularRegion ( World world,float x, float y, int r, int g, int b,int id) {
+	/**
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param id
+	 *          This is how the teams will be able to identify there location and
+	 *          whether or not they run the rish of being eliminated
+	 */
+	public RectangularRegion ( World world, float x, float y, int r, int g, int b,
+	                           int id ) {
 		super(world);
 		x_ = x;
 		y_ = y;
@@ -31,30 +41,49 @@ public class RectangularRegion extends Region{
 
 		// TODO Auto-generated constructor stub
 	}
-	public int getRegionID() {
+
+	/**
+	 * @return int id of the region
+	 */
+	public int getRegionID () {
 		return id_;
 	}
-	public float[] getXBounds(){
-		float[] bounds = {x_, x_+ world_.getApplet().width/2.0f};
+
+	/**
+	 * @return Where the region begins and ends by the x axis
+	 */
+	public float[] getXBounds () {
+		float[] bounds = { x_, x_ + world_.getApplet().width / 2.0f };
 		return bounds;
 	}
-	public boolean inRegion(Boid me) {
-		if(this.getXBounds()[0]<me.getPosition().x && getXBounds()[1]>me.getPosition().x) {
+
+	/**
+	 * @param me
+	 * @return true if boid is currently in this region
+	 */
+	public boolean inRegion ( Boid me ) {
+		if ( this.getXBounds()[0] < me.getPosition().x
+		    && getXBounds()[1] > me.getPosition().x ) {
 			return true;
 		}
 		return false;
 	}
-	public PVector getCenter() {
-		float x = x_ + world_.getApplet().width/2;
-		float y = world_.getApplet().height/2;
+
+	/**
+	 * @return the center of the region
+	 */
+	public PVector getCenter () {
+		float x = x_ + world_.getApplet().width / 2;
+		float y = world_.getApplet().height / 2;
 		return new PVector(x,y);
 	}
+
 	public void render () {
 		PApplet applet = world_.getApplet();
 		applet.fill(r_,g_,b_);
 		applet.stroke(200);
 		applet.strokeWeight(5);
-		applet.rect(x_,y_,applet.width/2.0f,applet.height);
+		applet.rect(x_,y_,applet.width / 2.0f,applet.height);
 		applet.strokeWeight(1);
 	}
 

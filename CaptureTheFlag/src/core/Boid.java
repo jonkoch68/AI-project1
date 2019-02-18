@@ -309,4 +309,14 @@ public class Boid {
 		}
 		return enemies;
 	}
+	public ArrayList<Boid> getFriends(){
+		ArrayList<Boid> friend = new ArrayList<Boid>();
+		for(Boid boids : world_.getBoids()) {
+				if(this.id_ == boids.getId()) {
+					friend.add(boids);
+				}
+			}
+		return friend;
+	}
+
 }

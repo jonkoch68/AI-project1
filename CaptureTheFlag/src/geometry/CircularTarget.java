@@ -26,6 +26,7 @@ public class CircularTarget extends Region{
 		target_ = new FixedTarget(x,y);
 		color_ = color;
 	}
+
 	
 	public FixedTarget getTarget() {
 		return target_;

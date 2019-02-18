@@ -1,9 +1,11 @@
 import java.awt.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import arbitrator.OneChoice;
 import behavior.Seek;
+import behavior.Defend;
 import brain.SimpleBrain;
 import core.Behavior;
 import core.Boid;
@@ -38,39 +40,44 @@ public class CaptureBoids extends BoidsCore {
 		areaBlue_ =
 		    new RectangularRegion(world_,world_.getApplet().width / 2,0.0f,0,0,255,
 		                          1);
-		target0_ = new CircularTarget(100.0f, world_.getApplet().height/2,0,world_,50.0f,color(255,0,255));
-		target1_ = new CircularTarget(900.0f, world_.getApplet().height/2,1,world_,50.0f,color(255,0,255));
+		target0_ = new CircularTarget(900.0f, world_.getApplet().height/2,0,world_,50.0f,color(255,0,255));
+		target1_ = new CircularTarget(100.0f, world_.getApplet().height/2,1,world_,50.0f,color(255,0,255));
 		
 		world_.addThing(areaRed_);
 		world_.addThing(areaBlue_);
 		world_.addThing(target0_);
 		world_.addThing(target1_);
-		this.makeBoid(10,10,0);
-		this.makeBoid(750,600,1);
-		this.makeBoid(750,600,1);
+		this.makeBoid(10,10,0,0);
+
 
 	}
 	/*
 	 * (non-Javadoc)
 	 * @see BoidsCore#makeBoid()
 	 */
-
-	protected void makeBoid ( float x, float y, int id ) {
-		// behaviors
-		// behaviors
-		Behavior seek = new Seek(target0_.getTarget(),color(255,0,0));
+	/**
+	 * 
+	 * @param x determines where the x value on the map the boid will spawn
+	 * @param y determines where the y value on the map the boid will spawn
+	 * @param id Gives an id to which team the boid belongs to
+	 * @param agression on a scale from 1 to 3 will determine how aggressive the boid will be 1 being defensive and 3 being aggresive
+	 * This will make a boid with the parameters for our game of invaiders.
+	 * 
+	 */
+	protected void makeBoid ( float x, float y, int id, int agression  ) {
+		Defend defend = new Defend(75.0f,target0_,0);
 
 		// an arbitrator to combine behaviors
-		OneChoice arbitrator = new OneChoice(seek);
+		OneChoice arbitrator = new OneChoice(defend);
 
 		// a brain for action selection
-		SimpleBrain brain1 = new SimpleBrain(arbitrator);
+		SimpleBrain brain = new SimpleBrain(arbitrator);
 
 		// make the boid and add it to the world
-		TeamBoids boid =
-		    new TeamBoids(world_,new PVector(x,y),1,PVector.random2D(),
-		                  0.05f,2,60,radians(125),brain1,color(255*id),id);
+		TeamBoids boid = new TeamBoids(world_,new PVector(x,y),1,PVector.random2D(),
+		                     0.05f,2,60,radians(125),brain, color(255*id), id);
 		world_.addBoid(boid);
+		
 
 		if ( id == 0 ) {
 			teamOneBoids_.add(boid);
@@ -107,17 +114,19 @@ public class CaptureBoids extends BoidsCore {
 		for(TeamBoids boids : teamOneBoids_) {
 			if(target0_.inRegion(boids)){
 				score(boids);
+				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 				break;
 			}
 		}
 		for(TeamBoids boids : teamTwoBoids_) {
 			if(target1_.inRegion(boids)){
 				score(boids);
+				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 				break;
 			}
 		}
 		}
-		System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
+		
 	}
 
 	public void kill ( Boid victim ) {

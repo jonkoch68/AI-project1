@@ -7,6 +7,7 @@ import arbitrator.OneChoice;
 import behavior.GotoSide;
 import behavior.Seek;
 import brain.SimpleBrain;
+import chases_brain.Attacker;
 import chases_brain.Defender;
 import core.Behavior;
 import core.Boid;
@@ -46,11 +47,11 @@ public class CaptureBoids extends BoidsCore {
 		world_.addThing(areaBlue_);
 		world_.addThing(target0_);
 		world_.addThing(target1_);
-		for(int i=0;i<2;i++) {
-			this.makeBoid(10,10,0,0);
+		for(int i=0;i<1;i++) {
+			this.makeBoid(600,10,0,0);
 		}
 		makeBoid(100,100,1,0);
-		makeBoid(100,100,1,0);
+		//makeBoid(100,100,1,0);
 	}
 	/*
 	 * (non-Javadoc)
@@ -66,12 +67,15 @@ public class CaptureBoids extends BoidsCore {
 	 * 
 	 */
 	protected void makeBoid ( float x, float y, int id, int agression  ) {
-		Defender brain=null;
+		//Defender brain=null;
+		Attacker brain=null;
 		if(id==0) {
-			brain = new Defender(areaBlue_,target0_,id, teamOneBoids_);
+			//brain = new Defender(areaBlue_,target0_,id, teamOneBoids_);
+			brain=new Attacker(areaRed_,areaBlue_,target1_,id,teamOneBoids_);
 		}
 		else {
-			brain = new Defender(areaRed_,target1_,id, teamTwoBoids_);
+			//brain = new Defender(areaRed_,target1_,id, teamTwoBoids_);
+			brain=new Attacker(areaBlue_,areaRed_,target0_,id,teamTwoBoids_);
 		}
 		
 
@@ -173,8 +177,8 @@ public class CaptureBoids extends BoidsCore {
 
 		// make the boid and add it to the world
 		Boid boid = new Boid(world_,new PVector(mouseX,mouseY),1,PVector.random2D(),
-		                     0.05f,2,60,radians(125),brain,color(255),0);
-		teamOneBoids_.add(boid);
+		                     0.05f,2,60,radians(125),brain,color(0),0);
+		teamTwoBoids_.add(boid);
 		world_.addBoid(boid);
 	}
 	

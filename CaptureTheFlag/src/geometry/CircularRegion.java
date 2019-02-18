@@ -32,5 +32,7 @@ public class CircularRegion extends Region {
 		applet.ellipse(center_.x,center_.y,2 * radius_,2 * radius_);
 		applet.strokeWeight(1);
 	}
-
+	public PVector getCenter() {
+		return center_;
+	}
 }

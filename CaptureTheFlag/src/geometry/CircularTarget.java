@@ -1,7 +1,7 @@
 package geometry;
 
 import target.FixedTarget;
-import core.TeamBoids;
+import core.Boid;
 import core.World;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -34,10 +34,10 @@ public class CircularTarget extends Region{
 	public int getId() {
 		return id_;
 	}
-	public boolean inRegion(TeamBoids boid) {
+	public boolean inRegion(Boid boid) {
 		if(x_ < boid.getPosition().x && (x_+ radius_) > boid.getPosition().x) {
 			if(y_ < boid.getPosition().y && (y_+radius_) > boid.getPosition().y) {
-				if(boid.getTeam() == id_) {
+				if(boid.getId() == id_) {
 				return true;
 				}
 			}

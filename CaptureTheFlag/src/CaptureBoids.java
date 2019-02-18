@@ -4,26 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arbitrator.OneChoice;
-import behavior.Seek;
-import behavior.Defend;
 import behavior.GotoSide;
+import behavior.Seek;
 import brain.SimpleBrain;
 import core.Behavior;
 import core.Boid;
-import core.Brain;
-import core.TeamBoids;
 import processing.core.PApplet;
 import processing.core.PVector;
 import target.MouseTarget;
-
 import geometry.RectangularRegion;
 import geometry.CircularTarget;
+import jacks_brain.Defensive_brain;
 /**
  * Boids which seek the mouse position.
  */
 public class CaptureBoids extends BoidsCore {
-	private List<TeamBoids> teamOneBoids_; // boids in the world
-	private List<TeamBoids> teamTwoBoids_; // boids in the world
+	private ArrayList<Boid> teamOneBoids_; // boids in the world
+	private ArrayList<Boid> teamTwoBoids_; // boids in the world
 	private RectangularRegion areaRed_;
 	private RectangularRegion areaBlue_;
 	private CircularTarget target0_;
@@ -34,8 +31,8 @@ public class CaptureBoids extends BoidsCore {
 		super.setup();
 		score0_ = 0;
 		score1_ = 0;
-		teamOneBoids_ = new ArrayList<TeamBoids>();
-		teamTwoBoids_ = new ArrayList<TeamBoids>();
+		teamOneBoids_ = new ArrayList<Boid>();
+		teamTwoBoids_ = new ArrayList<Boid>();
 		areaRed_ =
 		    new RectangularRegion(world_,0.0f,0.0f,255,0,0,0);
 		areaBlue_ =
@@ -66,16 +63,11 @@ public class CaptureBoids extends BoidsCore {
 	 * 
 	 */
 	protected void makeBoid ( float x, float y, int id, int agression  ) {
-		GotoSide friend = new GotoSide(areaBlue_,0);
 
-		// an arbitrator to combine behaviors
-		OneChoice arbitrator = new OneChoice(friend);
-
-		// a brain for action selection
-		SimpleBrain brain = new SimpleBrain(arbitrator);
+		Defensive_brain brain = new Defensive_brain(id,areaBlue_,target0_);
 
 		// make the boid and add it to the world
-		TeamBoids boid = new TeamBoids(world_,new PVector(x,y),1,PVector.random2D(),
+		Boid boid = new Boid(world_,new PVector(x,y),1,PVector.random2D(),
 		                     0.05f,2,60,radians(125),brain, color(255*id), id);
 		world_.addBoid(boid);
 		
@@ -112,14 +104,14 @@ public class CaptureBoids extends BoidsCore {
 
 				}
 			}
-		for(TeamBoids boids : teamOneBoids_) {
+		for(Boid boids : teamOneBoids_) {
 			if(target0_.inRegion(boids)){
 				score(boids);
 				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 				break;
 			}
 		}
-		for(TeamBoids boids : teamTwoBoids_) {
+		for(Boid boids : teamTwoBoids_) {
 			if(target1_.inRegion(boids)){
 				score(boids);
 				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
@@ -139,8 +131,8 @@ public class CaptureBoids extends BoidsCore {
 		world_.killBoid(victim);
 
 	}
-	public void score(TeamBoids boid) {
-		if(boid.getTeam() == 1) {
+	public void score(Boid boid) {
+		if(boid.getId() == 1) {
 			world_.killBoid(boid);
 			teamTwoBoids_.remove(boid);
 			score1_++;
@@ -161,7 +153,20 @@ public class CaptureBoids extends BoidsCore {
 	 */
 	@Override
 	protected void makeBoid () {
+		// behaviors
+		Behavior seek = new Seek(new MouseTarget(this),color(255,0,0));
 
+		// an arbitrator to combine behaviors
+		OneChoice arbitrator = new OneChoice(seek);
+
+		// a brain for action selection
+		SimpleBrain brain = new SimpleBrain(arbitrator);
+
+		// make the boid and add it to the world
+		Boid boid = new Boid(world_,new PVector(mouseX,mouseY),1,PVector.random2D(),
+		                     0.05f,2,60,radians(125),brain,1,color(255));
+		world_.addBoid(boid);
 	}
+	
 
 }

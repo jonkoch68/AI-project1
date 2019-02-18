@@ -29,7 +29,7 @@ public class SeekBoids extends BoidsCore {
 
 		// make the boid and add it to the world
 		Boid boid = new Boid(world_,new PVector(mouseX,mouseY),1,PVector.random2D(),
-		                     0.05f,2,60,radians(125),brain);
+		                     0.05f,2,60,radians(125),brain,0);
 		world_.addBoid(boid);
 	}
 

@@ -2,7 +2,6 @@ package behavior;
 
 import core.Behavior;
 import core.Boid;
-import core.TeamBoids;
 import core.World;
 import geometry.RectangularRegion;
 import processing.core.PVector;

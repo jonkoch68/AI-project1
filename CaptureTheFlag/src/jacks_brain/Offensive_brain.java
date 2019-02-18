@@ -1,4 +1,4 @@
-package jacks_brian;
+package jacks_brain;
 
 /**
  * @author Jonko

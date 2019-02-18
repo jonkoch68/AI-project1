@@ -1,5 +1,8 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -32,6 +35,8 @@ public class Boid {
 	private World world_; // world the boid belongs to
 
 	private int color_; // boid's color
+	
+	private int id_;
 
 	/**
 	 * Create a new boid with the specified parameters and a default color.
@@ -57,9 +62,9 @@ public class Boid {
 	 */
 	public Boid ( World world, PVector position, float mass, PVector velocity,
 	              float maxforce, float maxspeed, float neighborRadius,
-	              float neighborAngle, Brain brain ) {
+	              float neighborAngle, Brain brain, int id ) {
 		this(world,position,mass,velocity,maxforce,maxspeed,neighborRadius,
-		     neighborAngle,brain,world.getApplet().color(51,21,168));
+		     neighborAngle,brain,world.getApplet().color(51,21,168),id);
 	}
 
 	/**
@@ -88,7 +93,7 @@ public class Boid {
 	 */
 	public Boid ( World world, PVector position, float mass, PVector velocity,
 	              float maxforce, float maxspeed, float neighborRadius,
-	              float neighborAngle, Brain brain, int color ) {
+	              float neighborAngle, Brain brain, int color, int id ) {
 		world_ = world;
 
 		position_ = position;
@@ -109,6 +114,7 @@ public class Boid {
 
 		brain_ = brain;
 		color_ = color;
+		id_ = id;
 	}
 
 	/**
@@ -129,6 +135,9 @@ public class Boid {
 		return mass_;
 	}
 
+	public int getId() {
+		return id_;
+	}
 	/**
 	 * Get the boid's velocity.
 	 * 
@@ -288,5 +297,14 @@ public class Boid {
 	 */
 	public float getLength () {
 		return 20;
+	}
+	public ArrayList<Boid> getNeighbors(){
+		ArrayList<Boid> neighbors = new ArrayList<Boid>();
+		for(Boid boids : world_.getBoids()) {
+			if(this.isNeighbor(boids)) {
+				neighbors.add(boids);
+			}
+		}
+		return neighbors;
 	}
 }

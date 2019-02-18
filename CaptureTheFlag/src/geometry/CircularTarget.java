@@ -35,15 +35,14 @@ public class CircularTarget extends Region{
 		return id_;
 	}
 	public boolean inRegion(Boid boid) {
-		if(x_ < boid.getPosition().x && (x_+ radius_) > boid.getPosition().x) {
-			if(y_ < boid.getPosition().y && (y_+radius_) > boid.getPosition().y) {
-				if(boid.getId() == id_) {
+		PVector p = boid.getPosition();
+		PVector t = target_.getPosition();
+		if(world_.getApplet().dist(p.x,p.y,t.x,t.y) < radius_) {
 				return true;
 				}
-			}
-			
-		}
+	else {
 		return false;
+	}
 	}
 	
 	/*

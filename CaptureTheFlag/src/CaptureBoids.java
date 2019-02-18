@@ -1,30 +1,29 @@
 import java.awt.Color;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import arbitrator.OneChoice;
-import behavior.GotoSide;
 import behavior.Seek;
 import brain.SimpleBrain;
 import core.Behavior;
 import core.Boid;
+import core.Brain;
 import processing.core.PApplet;
 import processing.core.PVector;
 import target.MouseTarget;
 import geometry.RectangularRegion;
 import geometry.CircularTarget;
 import jacks_brain.Defensive_brain;
+import jacks_brain.Offensive_brain;
 /**
  * Boids which seek the mouse position.
  */
 public class CaptureBoids extends BoidsCore {
 	private ArrayList<Boid> teamOneBoids_; // boids in the world
 	private ArrayList<Boid> teamTwoBoids_; // boids in the world
-	private RectangularRegion areaRed_;
-	private RectangularRegion areaBlue_;
-	private CircularTarget target0_;
-	private CircularTarget target1_;
+	private RectangularRegion areaOne_;
+	private RectangularRegion areaTwo_;
+	private CircularTarget targetOne_;
+	private CircularTarget targetTwo_;
 	private int score0_,score1_;
 
 	public void setup () {
@@ -33,19 +32,26 @@ public class CaptureBoids extends BoidsCore {
 		score1_ = 0;
 		teamOneBoids_ = new ArrayList<Boid>();
 		teamTwoBoids_ = new ArrayList<Boid>();
-		areaRed_ =
+		
+		areaOne_ =
 		    new RectangularRegion(world_,0.0f,0.0f,255,0,0,0);
-		areaBlue_ =
+		areaTwo_ =
 		    new RectangularRegion(world_,world_.getApplet().width / 2,0.0f,0,0,255,
 		                          1);
-		target0_ = new CircularTarget(900.0f, world_.getApplet().height/2,0,world_,50.0f,color(255,0,255));
-		target1_ = new CircularTarget(100.0f, world_.getApplet().height/2,1,world_,50.0f,color(255,0,255));
+		targetOne_ = new CircularTarget(900.0f, world_.getApplet().height/2,0,world_,50.0f,color(255,0,255));
+		targetTwo_ = new CircularTarget(100.0f, world_.getApplet().height/2,1,world_,50.0f,color(255,0,255));
 		
-		world_.addThing(areaRed_);
-		world_.addThing(areaBlue_);
-		world_.addThing(target0_);
-		world_.addThing(target1_);
+		world_.addThing(areaOne_);
+		world_.addThing(areaTwo_);
+		world_.addThing(targetOne_);
+		world_.addThing(targetTwo_);
 		this.makeBoid(10,10,0,0);
+		this.makeBoid(10,10,0,0);
+		this.makeBoid(10,10,0,0);
+		
+		this.makeBoid(990,10,1,2);
+		this.makeBoid(990,10,1,2);
+		this.makeBoid(990,10,1,2);
 
 
 	}
@@ -63,12 +69,33 @@ public class CaptureBoids extends BoidsCore {
 	 * 
 	 */
 	protected void makeBoid ( float x, float y, int id, int agression  ) {
+		Brain brain = null;
 
-		Defensive_brain brain = new Defensive_brain(id,areaBlue_,target0_);
-
-		// make the boid and add it to the world
+		if(id == 0) {
+			if(agression == 0) {
+				brain = new Defensive_brain(areaOne_,targetTwo_);
+			}
+			else if(agression == 1)
+			{
+				//insert code for neutral
+			}
+			else {
+				brain = new Offensive_brain(areaOne_,targetOne_); 
+			}
+		}else {
+			if(agression == 0) {
+				brain = new Defensive_brain(areaTwo_,targetOne_);
+			}
+			else if(agression == 1)
+			{
+				//insert code for neutral
+			}
+			else {
+				brain = new Offensive_brain(areaTwo_,targetTwo_); 
+			}
+		}
 		Boid boid = new Boid(world_,new PVector(x,y),1,PVector.random2D(),
-		                     0.05f,2,60,radians(125),brain, color(255*id), id);
+		                     0.05f,2,75,radians(360),brain, color(255*id), id);
 		world_.addBoid(boid);
 		
 
@@ -88,14 +115,14 @@ public class CaptureBoids extends BoidsCore {
 				for ( Boid other : teamTwoBoids_ ) {
 					if ( PVector.dist(other.getPosition(),toCheck.getPosition()) <= 10 ) {// overlapping
 					                                                                      // coordinates		
-						if ( areaRed_.inRegion(toCheck) && areaRed_.inRegion(other) ) {// both
+						if ( areaOne_.inRegion(toCheck) && areaOne_.inRegion(other) ) {// both
 						                                                               // in
 						                                                               // teamOne's
 						                                                               // region
 							kill(other);
 							break;
-						} else if ( areaBlue_.inRegion(toCheck)
-						    && areaBlue_.inRegion(other) ) {// both in teamTwo's region
+						} else if ( areaTwo_.inRegion(toCheck)
+						    && areaTwo_.inRegion(other) ) {// both in teamTwo's region
 							kill(toCheck);
 							break outerloop;
 						}
@@ -105,14 +132,14 @@ public class CaptureBoids extends BoidsCore {
 				}
 			}
 		for(Boid boids : teamOneBoids_) {
-			if(target0_.inRegion(boids)){
+			if(targetOne_.inRegion(boids)){
 				score(boids);
 				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 				break;
 			}
 		}
 		for(Boid boids : teamTwoBoids_) {
-			if(target1_.inRegion(boids)){
+			if(targetTwo_.inRegion(boids)){
 				score(boids);
 				System.out.printf("The score is Team 1: %d || Team 2: %d\n", score0_,score1_);
 				break;
@@ -164,8 +191,9 @@ public class CaptureBoids extends BoidsCore {
 
 		// make the boid and add it to the world
 		Boid boid = new Boid(world_,new PVector(mouseX,mouseY),1,PVector.random2D(),
-		                     0.05f,2,60,radians(125),brain,1,color(255));
+		                     0.05f,2,60,radians(125),brain,color(255),1);
 		world_.addBoid(boid);
+		teamTwoBoids_.add(boid);
 	}
 	
 

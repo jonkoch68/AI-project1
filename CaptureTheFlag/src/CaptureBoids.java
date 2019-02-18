@@ -6,6 +6,7 @@ import java.util.List;
 import arbitrator.OneChoice;
 import behavior.Seek;
 import behavior.Defend;
+import behavior.GotoSide;
 import brain.SimpleBrain;
 import core.Behavior;
 import core.Boid;
@@ -65,10 +66,10 @@ public class CaptureBoids extends BoidsCore {
 	 * 
 	 */
 	protected void makeBoid ( float x, float y, int id, int agression  ) {
-		Defend defend = new Defend(75.0f,target0_,0);
+		GotoSide friend = new GotoSide(areaBlue_,0);
 
 		// an arbitrator to combine behaviors
-		OneChoice arbitrator = new OneChoice(defend);
+		OneChoice arbitrator = new OneChoice(friend);
 
 		// a brain for action selection
 		SimpleBrain brain = new SimpleBrain(arbitrator);

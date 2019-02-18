@@ -44,6 +44,11 @@ public class RectangularRegion extends Region{
 		}
 		return false;
 	}
+	public PVector getCenter() {
+		float x = x_ + world_.getApplet().width/2;
+		float y = world_.getApplet().height/2;
+		return new PVector(x,y);
+	}
 	public void render () {
 		PApplet applet = world_.getApplet();
 		applet.fill(r_,g_,b_);

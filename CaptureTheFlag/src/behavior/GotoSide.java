@@ -13,7 +13,7 @@ import processing.core.PVector;
  */
 public class GotoSide extends Behavior {
 
-	private int id_;
+
 	private RectangularRegion region_;
 	/**
 	 * @param c

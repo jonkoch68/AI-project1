@@ -298,13 +298,15 @@ public class Boid {
 	public float getLength () {
 		return 20;
 	}
-	public ArrayList<Boid> getNeighbors(){
-		ArrayList<Boid> neighbors = new ArrayList<Boid>();
+	public ArrayList<Boid> getEnemies(){
+		ArrayList<Boid> enemies = new ArrayList<Boid>();
 		for(Boid boids : world_.getBoids()) {
 			if(this.isNeighbor(boids)) {
-				neighbors.add(boids);
+				if(this.id_ != boids.getId()) {
+					enemies.add(boids);
+				}
 			}
 		}
-		return neighbors;
+		return enemies;
 	}
 }
